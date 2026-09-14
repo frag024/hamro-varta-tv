@@ -1,0 +1,69 @@
+import { NotificationItem } from '../types';
+
+// MOCK / DEMO CONTENT ONLY — see mockNews.ts header note.
+// Replace with a push-notification history API later.
+export const mockNotifications: NotificationItem[] = [
+  {
+    id: 'ntf-001',
+    type: 'breaking',
+    title: 'BREAKING NEWS',
+    message: 'Important announcement expected from the Sikkim government today.',
+    timeAgo: '2 minutes ago',
+    linkedArticleId: 'n-006',
+  },
+  {
+    id: 'ntf-002',
+    type: 'live',
+    title: 'LIVE NOW',
+    message: 'Hamro Varta Television is live now with the evening bulletin.',
+    timeAgo: '35 minutes ago',
+  },
+  {
+    id: 'ntf-003',
+    type: 'update',
+    title: 'NEWS UPDATE',
+    message: 'Tourism department issues new advisory for high-altitude routes.',
+    timeAgo: '1 hour ago',
+    linkedArticleId: 'n-004',
+  },
+  {
+    id: 'ntf-004',
+    type: 'update',
+    title: 'NEWS UPDATE',
+    message: 'Tsomgo Lake permits see high demand as skies clear over East Sikkim.',
+    timeAgo: '3 hours ago',
+    linkedArticleId: 'n-019',
+  },
+  {
+    id: 'ntf-005',
+    type: 'general',
+    title: 'HAMRO VARTA TV',
+    message: 'New ground report from Pelling is now available in Videos.',
+    timeAgo: '5 hours ago',
+    linkedVideoId: 'v-003',
+  },
+  {
+    id: 'ntf-006',
+    type: 'update',
+    title: 'NEWS UPDATE',
+    message: 'Gangtok ropeway ridership climbs as commuters adopt the service.',
+    timeAgo: 'Yesterday',
+    linkedArticleId: 'n-009',
+  },
+  {
+    id: 'ntf-007',
+    type: 'general',
+    title: 'HAMRO VARTA TV',
+    message: 'Catch our special interview on organic farming exports, now streaming.',
+    timeAgo: 'Yesterday',
+    linkedVideoId: 'v-008',
+  },
+  {
+    id: 'ntf-008',
+    type: 'breaking',
+    title: 'BREAKING NEWS',
+    message: 'Weather advisory issued for North and West Sikkim districts.',
+    timeAgo: '2 days ago',
+    linkedArticleId: 'n-004',
+  },
+];

@@ -376,34 +376,41 @@ The PRD contains the detailed requirements, workflows, modules, user roles, and 
 
 ## Project Structure
 
-The repository may evolve toward a structure similar to:
-
 ```text
 hamro-varta-tv/
 |
 ├── README.md
 ├── HAMRO_VARTA_CMS_PRD.md
 |
-├── frontend/
-|   └── ...
+├── cms/            Node/Express CMS + content API (admin panel at /admin)
 |
-├── backend/
-|   └── ...
+├── website/         Public news website — Vite + React + TypeScript
 |
-├── cms/
-|   └── ...
-|
-├── mobile/
-|   └── ...
-|
-├── docs/
-|   └── ...
-|
-└── assets/
-    └── ...
+└── mobile-app/      Reader/viewer app — Expo + React Native
 ```
 
-The final structure will depend on the selected technology stack and deployment architecture.
+Each folder has its own README with setup instructions. `website` and
+`mobile-app` are both clients of `cms` — one CMS, one API, every
+platform, per the PRD's core principle.
+
+## Quick Start (local demo)
+
+```bash
+# 1. CMS + API (http://localhost:4000, admin at /admin)
+cd cms && npm install && node index.js
+
+# 2. Website (http://localhost:5173) — in a second terminal
+cd website && npm install && npm run dev
+
+# 3. Mobile app — in a third terminal
+cd mobile-app && npm install && npx expo start
+```
+
+This is a Phase 1 demo build: JSON-file storage, no authentication yet,
+and dashboard audience/revenue/social numbers are clearly-labelled
+placeholders. See each folder's README and the PRD's roadmap for the
+production upgrade path (real database, auth/RBAC, YouTube/Facebook API
+integration, analytics pipeline).
 
 ---
 
@@ -445,41 +452,42 @@ The organization should have complete ownership and control over its published d
 
 * [x] Product requirement documentation
 * [ ] UI/UX design
-* [ ] Database design
-* [ ] Backend foundation
+* [x] Database design *(demo: JSON-file store; real DB design pending)*
+* [x] Backend foundation *(demo: Node/Express API)*
 * [ ] Authentication
-* [ ] CMS foundation
+* [x] CMS foundation *(demo build in `cms/`)*
 
 ### Phase 2 — CMS
 
-* [ ] Dashboard
-* [ ] User management
-* [ ] Role and permissions
-* [ ] News management
-* [ ] Category management
-* [ ] Author management
-* [ ] Media management
-* [ ] Video management
-* [ ] Event management
-* [ ] Publishing workflow
+* [x] Dashboard *(demo data for audience/revenue/social)*
+* [ ] User management (real accounts)
+* [x] Role and permissions *(demo: client-side role switcher, not real auth)*
+* [x] News management *(with editorial workflow: draft → review → published)*
+* [x] Category management
+* [x] Author management *(basic employee directory)*
+* [ ] Media management (upload pipeline)
+* [x] Video management *(metadata only, no transcoding)*
+* [x] Event management
+* [x] Publishing workflow *(status field + breaking-news + audit log)*
 
 ### Phase 3 — Public Website
 
-* [ ] Homepage
-* [ ] News pages
-* [ ] Category pages
-* [ ] Video pages
+* [x] Homepage
+* [x] News pages
+* [x] Category pages
+* [x] Video pages
 * [ ] Event pages
 * [ ] Search
-* [ ] Responsive design
+* [x] Responsive design
 * [ ] SEO optimization
 
 ### Phase 4 — Mobile Application
 
-* [ ] Android application
-* [ ] iOS application
+* [x] App shell (Expo/React Native)
+* [ ] Android release build
+* [ ] iOS release build
 * [ ] Push notifications
-* [ ] Content synchronization
+* [ ] Content synchronization with `cms`
 * [ ] User personalization
 
 ### Phase 5 — Advanced Platform

@@ -1,0 +1,11 @@
+[
+  { "id": "latest", "label": "Latest" },
+  { "id": "sikkim", "label": "Sikkim" },
+  { "id": "national", "label": "National" },
+  { "id": "politics", "label": "Politics" },
+  { "id": "business", "label": "Business" },
+  { "id": "sports", "label": "Sports" },
+  { "id": "entertainment", "label": "Entertainment" },
+  { "id": "tourism", "label": "Tourism" },
+  { "id": "culture", "label": "Culture" }
+]

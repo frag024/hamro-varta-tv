@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "Hamro Varta TV",
+    "slug": "hamro-varta-tv",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#F6F5F3",
+    "scheme": "hamrovarta",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "tv.hamrovarta.demo"
+    },
+    "android": {
+      "package": "tv.hamrovarta.demo",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "backgroundColor": "#B71C1C",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 220,
+          "resizeMode": "contain",
+          "backgroundColor": "#7A0F0F"
+        }
+      ],
+      "expo-status-bar",
+      "expo-font"
+    ]
+  }
+}

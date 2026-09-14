@@ -1,0 +1,182 @@
+[
+  {
+    "id": "log-001",
+    "timestamp": "2026-09-14T04:55:23.578Z",
+    "user": "super_admin",
+    "action": "update",
+    "entity": "homepage",
+    "entityId": "reorder",
+    "previousValue": [
+      {
+        "id": "hp-01",
+        "key": "breaking",
+        "label": "Breaking News Bar",
+        "enabled": true,
+        "order": 1
+      },
+      {
+        "id": "hp-02",
+        "key": "hero",
+        "label": "Hero News (Main + 2 stories)",
+        "enabled": true,
+        "order": 2
+      },
+      {
+        "id": "hp-03",
+        "key": "latest",
+        "label": "Latest News",
+        "enabled": true,
+        "order": 3
+      },
+      {
+        "id": "hp-04",
+        "key": "sikkim",
+        "label": "Sikkim News",
+        "enabled": true,
+        "order": 4
+      },
+      {
+        "id": "hp-05",
+        "key": "politics",
+        "label": "Politics",
+        "enabled": true,
+        "order": 5
+      },
+      {
+        "id": "hp-06",
+        "key": "sports",
+        "label": "Sports",
+        "enabled": true,
+        "order": 6
+      },
+      {
+        "id": "hp-07",
+        "key": "entertainment",
+        "label": "Entertainment",
+        "enabled": true,
+        "order": 7
+      },
+      {
+        "id": "hp-08",
+        "key": "videos",
+        "label": "Videos",
+        "enabled": true,
+        "order": 8
+      },
+      {
+        "id": "hp-09",
+        "key": "livetv",
+        "label": "Live TV",
+        "enabled": true,
+        "order": 9
+      },
+      {
+        "id": "hp-10",
+        "key": "events",
+        "label": "Upcoming Events",
+        "enabled": true,
+        "order": 10
+      },
+      {
+        "id": "hp-11",
+        "key": "trending",
+        "label": "Trending",
+        "enabled": false,
+        "order": 11
+      },
+      {
+        "id": "hp-12",
+        "key": "mostread",
+        "label": "Most Read",
+        "enabled": false,
+        "order": 12
+      }
+    ],
+    "newValue": [
+      {
+        "id": "hp-01",
+        "key": "breaking",
+        "label": "Breaking News Bar",
+        "enabled": true,
+        "order": 1
+      },
+      {
+        "id": "hp-02",
+        "key": "hero",
+        "label": "Hero News (Main + 2 stories)",
+        "enabled": true,
+        "order": 2
+      },
+      {
+        "id": "hp-03",
+        "key": "latest",
+        "label": "Latest News",
+        "enabled": true,
+        "order": 3
+      },
+      {
+        "id": "hp-04",
+        "key": "sikkim",
+        "label": "Sikkim News",
+        "enabled": true,
+        "order": 4
+      },
+      {
+        "id": "hp-05",
+        "key": "politics",
+        "label": "Politics",
+        "enabled": true,
+        "order": 5
+      },
+      {
+        "id": "hp-06",
+        "key": "sports",
+        "label": "Sports",
+        "enabled": true,
+        "order": 6
+      },
+      {
+        "id": "hp-07",
+        "key": "entertainment",
+        "label": "Entertainment",
+        "enabled": true,
+        "order": 7
+      },
+      {
+        "id": "hp-08",
+        "key": "videos",
+        "label": "Videos",
+        "enabled": true,
+        "order": 8
+      },
+      {
+        "id": "hp-09",
+        "key": "livetv",
+        "label": "Live TV",
+        "enabled": true,
+        "order": 9
+      },
+      {
+        "id": "hp-10",
+        "key": "events",
+        "label": "Upcoming Events",
+        "enabled": true,
+        "order": 10
+      },
+      {
+        "id": "hp-11",
+        "key": "trending",
+        "label": "Trending",
+        "enabled": false,
+        "order": 11
+      },
+      {
+        "id": "hp-12",
+        "key": "mostread",
+        "label": "Most Read",
+        "enabled": false,
+        "order": 12
+      }
+    ]
+  }
+]

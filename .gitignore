@@ -1,0 +1,42 @@
+# dependencies
+node_modules/
+
+# builds
+dist/
+dist-ssr/
+build/
+web-build/
+.expo/
+ios/
+android/
+
+# env / secrets — never commit real credentials
+.env
+.env.*
+!.env.example
+
+# logs
+*.log
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# editors / OS
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+
+# native signing
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.pem
+
+# misc
+*.tsbuildinfo
+.metro-health-check*

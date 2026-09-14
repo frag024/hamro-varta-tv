@@ -1,0 +1,764 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hamro Varta — CMS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lexend:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --red:#C81E1E; --red-dark:#9B1414; --ink:#101114; --ink-soft:#3C3E43;
+    --slate:#6B6E76; --hairline:#E7E6E4; --surface:#FFFFFF; --surface-alt:#F5F4F2;
+    --chip:#F1F0ED; --gold:#C88C28; --green:#2E7D46;
+    --sidebar:#15161B; --sidebar-alt:#1D1F26;
+    --radius:12px; --radius-sm:8px;
+    --shadow-sm:0 1px 2px rgba(16,17,20,.05);
+    --shadow-md:0 6px 20px -6px rgba(16,17,20,.10), 0 1px 2px rgba(16,17,20,.05);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:"Plus Jakarta Sans","Segoe UI",-apple-system,Arial,sans-serif;background:var(--surface-alt);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  a{color:inherit;}
+  h1,h2,h3,.heading-font,.sidebar .brand b,.kpi-card .n,.section-title,.topbar h1,.modal h2{font-family:"Lexend","Plus Jakarta Sans",sans-serif;letter-spacing:-.01em;}
+  .shell{display:flex;min-height:100vh;}
+  .sidebar{width:240px;background:var(--sidebar);color:#fff;flex:none;padding:20px 0;display:flex;flex-direction:column;}
+  .sidebar .brand{display:flex;align-items:center;gap:10px;padding:0 20px 16px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:12px;}
+  .sidebar .brand img{width:30px;height:30px;border-radius:6px;}
+  .sidebar .brand b{font-size:14px;letter-spacing:-.01em;}
+  .sidebar .brand small{display:block;color:var(--red);font-size:9px;letter-spacing:.12em;font-weight:700;}
+  .role-picker{padding:0 20px 14px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:8px;}
+  .role-picker label{display:block;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:6px;}
+  .role-picker select{width:100%;padding:8px 9px;border-radius:var(--radius-sm);border:1px solid rgba(255,255,255,.14);background:var(--sidebar-alt);color:#fff;font-size:12.5px;}
+  .role-picker select option{color:#111;}
+  .nav-scroll{flex:1;overflow-y:auto;padding:0 10px;}
+  .nav-group-label{padding:16px 10px 6px;font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:#fff;opacity:.9;font-weight:800;}
+  .navitem{display:flex;align-items:center;gap:10px;padding:9px 10px;margin-bottom:2px;font-size:13.5px;font-weight:700;color:#fff;cursor:pointer;border-radius:var(--radius-sm);transition:background .12s,color .12s;}
+  .navitem:hover{color:#fff;background:rgba(255,255,255,.08);}
+  .navitem.active{color:#fff;background:linear-gradient(180deg, rgba(200,30,30,.9), rgba(155,20,20,.9));box-shadow:var(--shadow-sm);}
+  .navitem .count{margin-left:auto;background:rgba(255,255,255,.18);color:#fff;padding:1px 7px;border-radius:99px;font-size:10.5px;}
+  .navitem.active .count{background:rgba(255,255,255,.25);}
+  .nav-icon{width:18px;height:18px;flex:none;display:flex;align-items:center;justify-content:center;opacity:1;color:#fff;}
+  .nav-icon svg{width:100%;height:100%;fill:currentColor;}
+  .main{flex:1;padding:30px 36px;max-width:1220px;}
+  .topbar{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--hairline);}
+  .topbar h1{font-size:23px;margin:0 0 4px;letter-spacing:-.01em;}
+  .topbar p{margin:0;color:var(--slate);font-size:13px;}
+  .btn{display:inline-flex;align-items:center;gap:6px;background:var(--red);color:#fff;border:none;padding:9px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px -2px rgba(200,30,30,.5);transition:background .12s,transform .12s;}
+  .btn:hover{background:var(--red-dark);}
+  .btn:active{transform:translateY(1px);}
+  .btn.ghost{background:var(--surface);color:var(--ink);border:1px solid var(--hairline);box-shadow:none;}
+  .btn.ghost:hover{background:var(--surface-alt);}
+  .btn.small{padding:5px 10px;font-size:11.5px;border-radius:6px;}
+  .btn:disabled{opacity:.4;cursor:not-allowed;}
+  .btn.icon-only{padding:0;width:30px;height:30px;justify-content:center;}
+  .btn.icon-only svg{width:15px;height:15px;fill:currentColor;flex:none;}
+  .btn.ghost.icon-only{color:var(--ink-soft);}
+  .btn.ghost.icon-only:hover{background:var(--surface-alt);color:var(--ink);}
+  .btn.icon-only.danger:hover{color:var(--red);background:#FBEAE6;border-color:#F4CFC9;}
+  .view-list{max-height:60vh;overflow-y:auto;margin:-4px 0 4px;}
+  .view-row{display:grid;grid-template-columns:170px 1fr;gap:14px;padding:9px 0;border-bottom:1px solid var(--hairline);font-size:13px;}
+  .view-row:last-child{border-bottom:none;}
+  .view-label{font-weight:700;color:var(--ink-soft);font-size:11.5px;}
+  .view-value{color:var(--ink);word-break:break-word;}
+  .view-value img{max-width:140px;border-radius:6px;display:block;margin-top:4px;}
+  table{width:100%;border-collapse:collapse;background:var(--surface);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-md);border:1px solid var(--hairline);}
+  th{text-align:left;font-size:10.5px;letter-spacing:.06em;color:var(--slate);text-transform:uppercase;padding:12px 14px;border-bottom:1px solid var(--hairline);background:var(--surface-alt);}
+  td{padding:12px 14px;border-bottom:1px solid var(--hairline);font-size:13px;vertical-align:middle;}
+  tr:last-child td{border-bottom:none;}
+  tbody tr:hover td{background:var(--surface-alt);}
+  td.thumb img{width:52px;height:36px;object-fit:cover;border-radius:6px;display:block;}
+  .tag{display:inline-block;font-size:10px;font-weight:700;color:var(--red);background:#FBEAE6;padding:2px 8px;border-radius:99px;}
+  .dot-pill{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:var(--ink-soft);}
+  .dot-pill .dot{width:7px;height:7px;border-radius:99px;background:var(--slate);flex:none;}
+  .dot-pill.on .dot{background:var(--red);box-shadow:0 0 0 3px rgba(200,30,30,.15);}
+  .dot-pill.on{color:var(--red);}
+  .hq-pill{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;color:var(--gold);background:#FBF1DD;padding:2px 8px;border-radius:99px;}
+  .status-pill{display:inline-block;font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;text-transform:capitalize;}
+  .status-published{color:var(--green);background:#E7F5EC;}
+  .status-draft{color:var(--slate);background:#EEEEEC;}
+  .status-submitted,.status-under_review{color:var(--gold);background:#FBF1DD;}
+  .status-scheduled{color:#2A5CA8;background:#E8EFFA;}
+  .status-rejected{color:var(--red);background:#FBEAE6;}
+  .actions{display:flex;gap:6px;}
+  .headline-cell{max-width:320px;font-weight:600;}
+  .empty{padding:40px;text-align:center;color:var(--slate);}
+
+  .modal-backdrop{position:fixed;inset:0;background:rgba(12,10,10,.5);backdrop-filter:blur(2px);display:none;align-items:flex-start;justify-content:center;padding:6vh 20px;overflow-y:auto;z-index:50;}
+  .modal-backdrop.open{display:flex;}
+  .modal{background:#fff;border-radius:var(--radius);width:100%;max-width:640px;padding:26px 28px;box-shadow:0 30px 60px rgba(0,0,0,.28);}
+  .modal h2{margin:0 0 18px;font-size:18px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:12px;font-weight:700;color:var(--ink-soft);margin-bottom:5px;}
+  .field input, .field select, .field textarea{width:100%;padding:9px 11px;border:1px solid var(--hairline);border-radius:6px;font-size:13.5px;font-family:inherit;background:var(--surface-alt);}
+  .field textarea{min-height:70px;resize:vertical;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;}
+  .hint{font-size:11.5px;color:var(--slate);margin-top:4px;}
+  .toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:#fff;padding:11px 18px;border-radius:8px;font-size:13px;box-shadow:0 10px 30px rgba(0,0,0,.3);opacity:0;transform:translateY(8px);transition:opacity .2s,transform .2s;pointer-events:none;z-index:99;}
+  .toast.show{opacity:1;transform:translateY(0);}
+
+  /* dashboard */
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+  .kpi-card{background:var(--surface);border:1px solid var(--hairline);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow-sm);display:flex;align-items:flex-start;gap:12px;transition:box-shadow .12s,transform .12s;}
+  .kpi-card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px);}
+  .kpi-card .icon-chip{width:34px;height:34px;border-radius:9px;flex:none;display:flex;align-items:center;justify-content:center;background:var(--chip);}
+  .kpi-card .icon-chip svg{width:18px;height:18px;fill:var(--ink-soft);}
+  .kpi-card.accent-red .icon-chip{background:#FBEAE6;}
+  .kpi-card.accent-red .icon-chip svg{fill:var(--red);}
+  .kpi-card.accent-gold .icon-chip{background:#FBF1DD;}
+  .kpi-card.accent-gold .icon-chip svg{fill:var(--gold);}
+  .kpi-card.accent-green .icon-chip{background:#E7F5EC;}
+  .kpi-card.accent-green .icon-chip svg{fill:var(--green);}
+  .kpi-card .n{font-size:24px;font-weight:800;line-height:1.1;margin-bottom:4px;letter-spacing:-.01em;}
+  .kpi-card .l{font-size:11.5px;color:var(--slate);font-weight:600;}
+  .kpi-card.accent-red .n{color:var(--red);}
+  .kpi-card.accent-gold .n{color:var(--gold);}
+  .kpi-card.accent-green .n{color:var(--green);}
+  .kpi-card.accent-ink .n{color:var(--ink);}
+  .section-title{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);margin:28px 0 12px;}
+  .demo-note{display:inline-block;font-size:10px;font-weight:700;color:var(--slate);background:var(--chip);padding:2px 8px;border-radius:99px;margin-left:2px;text-transform:none;letter-spacing:0;}
+  .breaking-ticker{background:var(--ink);color:#fff;border-radius:var(--radius-sm);padding:12px 16px;display:flex;align-items:center;gap:12px;font-size:13px;font-weight:600;box-shadow:var(--shadow-sm);}
+  .breaking-ticker .dot{display:inline-flex;align-items:center;gap:6px;color:var(--red);font-weight:800;letter-spacing:.04em;font-size:11.5px;flex:none;}
+  .breaking-ticker .dot::before{content:"";width:7px;height:7px;border-radius:99px;background:var(--red);box-shadow:0 0 0 3px rgba(200,30,30,.28);}
+  .breaking-ticker .empty-ticker{color:rgba(255,255,255,.5);font-weight:500;}
+
+  /* homepage builder */
+  .section-row{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--hairline);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:8px;box-shadow:var(--shadow-sm);}
+  .section-row .order-no{width:26px;height:26px;border-radius:99px;background:var(--surface-alt);display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:800;color:var(--slate);flex:none;}
+  .section-row .label{flex:1;font-size:13.5px;font-weight:600;}
+  .section-row.disabled{opacity:.45;}
+  .section-row .stack-btns{display:flex;flex-direction:column;gap:2px;}
+  .icon-btn{background:var(--surface-alt);border:1px solid var(--hairline);width:24px;height:22px;border-radius:4px;font-size:11px;cursor:pointer;line-height:1;}
+  .switch{position:relative;width:38px;height:21px;flex:none;}
+  .switch input{opacity:0;width:0;height:0;}
+  .switch .slider{position:absolute;inset:0;background:#D8D5D0;border-radius:99px;cursor:pointer;transition:.15s;}
+  .switch .slider:before{content:"";position:absolute;width:15px;height:15px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.15s;}
+  .switch input:checked + .slider{background:var(--green);}
+  .switch input:checked + .slider:before{transform:translateX(17px);}
+
+  /* activity log */
+  .log-row{display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--hairline);font-size:13px;}
+  .log-row:last-child{border-bottom:none;}
+  .log-row .t{color:var(--slate);font-size:11.5px;width:150px;flex:none;}
+  .log-row .who{font-weight:700;width:150px;flex:none;}
+  .log-action{font-weight:700;text-transform:uppercase;font-size:10.5px;padding:2px 7px;border-radius:4px;}
+  .log-action.create{color:var(--green);background:#E7F5EC;}
+  .log-action.update{color:#2A5CA8;background:#E8EFFA;}
+  .log-action.delete{color:var(--red);background:#FBEAE6;}
+  .readonly-banner{background:#FBF1DD;color:#8A6410;border:1px solid #F0DFB0;padding:9px 14px;border-radius:8px;font-size:12.5px;font-weight:600;margin-bottom:16px;}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="sidebar">
+    <div class="brand">
+      <img src="/media/logo-mark.png" alt="">
+      <div><b>Hamro Varta</b><small>CMS · DEMO</small></div>
+    </div>
+    <div class="role-picker">
+      <label>Viewing as (demo role)</label>
+      <select id="roleSelect"></select>
+    </div>
+    <div class="nav-scroll" id="navScroll"></div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <h1 id="pageTitle">Dashboard</h1>
+        <p id="pageDesc">Newsroom overview.</p>
+      </div>
+      <button class="btn" id="addBtn">+ Add New</button>
+    </div>
+    <div id="tableWrap"></div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <h2 id="modalTitle">Add Article</h2>
+    <form id="entityForm"></form>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const API = "http://localhost:4000/api";
+
+// ---------------------------------------------------------------- roles --
+// Demo-only RBAC: filters what the sidebar shows and disables write actions.
+// There is no real authentication behind this yet (see PRD §34/§70 for the
+// production design) -- it exists so every PRD persona's view can be demoed.
+const ROLES = {
+  super_admin:   { label: "Super Admin",            tabs: "*" },
+  editor_chief:  { label: "Editor-in-Chief",        tabs: ["dashboard","news","videos","events","notifications","programme","homepage","categories","districts","activity"] },
+  editor:        { label: "Editor",                 tabs: ["dashboard","news","videos","events","notifications","programme","activity"] },
+  journalist:    { label: "Journalist / Reporter",  tabs: ["dashboard","news"] },
+  video_team:    { label: "Video Team",             tabs: ["dashboard","videos","programme"] },
+  social_media:  { label: "Social Media Manager",   tabs: ["dashboard","notifications"] },
+  ad_manager:    { label: "Advertisement Manager",  tabs: ["dashboard","ads"] },
+  hr:            { label: "HR / Employee Manager",  tabs: ["dashboard","employees"] },
+  analyst:       { label: "Analyst / Management",   tabs: ["dashboard","activity"], readOnly: true },
+};
+const ALL_TAB_KEYS = ["dashboard","news","videos","events","notifications","programme","homepage","categories","districts","ads","employees","activity"];
+function currentRole(){ return localStorage.getItem("hvt_demo_role") || "super_admin"; }
+function roleAllows(tabKey){
+  const r = ROLES[currentRole()];
+  return r.tabs === "*" || r.tabs.includes(tabKey);
+}
+function isReadOnly(){ return !!ROLES[currentRole()].readOnly; }
+
+async function api(path, opts={}){
+  const headers = Object.assign({ "X-Demo-Role": currentRole() }, opts.headers || {});
+  return fetch(`${API}${path}`, Object.assign({}, opts, { headers }));
+}
+
+// ---------------------------------------------------------- tab registry --
+const NAV_GROUPS = [
+  { label: "Overview", items: ["dashboard"] },
+  { label: "Newsroom", items: ["news","videos","events","notifications","programme"] },
+  { label: "Site", items: ["homepage","categories","districts"] },
+  { label: "Business", items: ["ads","employees"] },
+  { label: "System", items: ["activity"] },
+];
+// Solid, single-colour glyphs (currentColor + fill-opacity for depth) --
+// no emoji, no multicolour art. Each renders in whatever colour its
+// container sets (white in the dark sidebar, ink/red in KPI chips).
+const ICONS = {
+  dashboard: `<svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2" fill-opacity=".22"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2" fill-opacity=".22"/></svg>`,
+  news: `<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="5" rx="1.5"/><rect x="3" y="11" width="18" height="3" rx="1.2" fill-opacity=".55"/><rect x="3" y="16" width="13" height="3" rx="1.2" fill-opacity=".55"/><rect x="3" y="21" width="8" height="2" rx="1" fill-opacity=".3"/></svg>`,
+  videos: `<svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="4" fill-opacity=".2"/><path d="M10 8.3l6.2 3.7-6.2 3.7z"/></svg>`,
+  events: `<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3" fill-opacity=".2"/><rect x="3" y="5" width="18" height="4.2" rx="2"/><rect x="6" y="12.5" width="3.6" height="3.6" rx="1"/><rect x="11.2" y="12.5" width="3.6" height="3.6" rx="1" fill-opacity=".55"/><rect x="16.4" y="12.5" width="2.2" height="3.6" rx="1" fill-opacity=".3"/></svg>`,
+  notifications: `<svg viewBox="0 0 24 24"><path d="M12 2a6 6 0 0 0-6 6v3.1c0 .55-.2 1.08-.56 1.5L4 15h16l-1.44-2.4A2.4 2.4 0 0 1 18 11.1V8a6 6 0 0 0-6-6z"/><circle cx="12" cy="19.4" r="2" fill-opacity=".7"/></svg>`,
+  programme: `<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="2.5" fill-opacity=".2"/><path d="M9 8.4l6.2 3.1-6.2 3.1z"/><rect x="9" y="19" width="6" height="1.6" rx=".8" fill-opacity=".5"/></svg>`,
+  homepage: `<svg viewBox="0 0 24 24"><path d="M12 2.6 2.4 10.8h2.9V21h5.2v-6.4h2.9V21h5.2V10.8h2.9z"/></svg>`,
+  categories: `<svg viewBox="0 0 24 24"><path d="M20.6 11.6 12.4 3.4A2 2 0 0 0 11 2.8H4.8A2 2 0 0 0 2.8 4.8V11c0 .5.2 1 .6 1.4l8.2 8.2c.8.8 2 .8 2.8 0l6.2-6.2c.8-.8.8-2 0-2.8z"/><circle cx="7.5" cy="7.5" r="1.7" fill-opacity=".4"/></svg>`,
+  districts: `<svg viewBox="0 0 24 24"><path d="M12 2c-3.9 0-7 3.1-7 7 0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z"/><circle cx="12" cy="9" r="2.7" fill-opacity=".45"/></svg>`,
+  ads: `<svg viewBox="0 0 24 24"><path d="M3 9.5h4l8-4v13l-8-4H3a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1z"/><rect x="4.6" y="14" width="2.6" height="5.6" rx="1.3" fill-opacity=".55"/></svg>`,
+  employees: `<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.4"/><path d="M2.6 19.4c0-3.6 2.9-6.1 6.4-6.1s6.4 2.5 6.4 6.1a1 1 0 0 1-1 1H3.6a1 1 0 0 1-1-1z"/><circle cx="17.6" cy="8.6" r="2.6" fill-opacity=".4"/><path d="M14.9 13.7c2.5.7 4.3 2.8 4.4 5.6a1 1 0 0 1-1 1.1h-2" fill-opacity=".4"/></svg>`,
+  activity: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill-opacity=".2"/><rect x="11.25" y="6.4" width="1.5" height="6" rx=".75"/><rect x="11.5" y="11.4" width="5" height="1.5" rx=".75" transform="rotate(35 12 12)"/></svg>`,
+  view: `<svg viewBox="0 0 24 24"><path d="M12 5c-5 0-9 4-10.5 7C3 15 7 19 12 19s9-4 10.5-7C21 9 17 5 12 5z" fill-opacity=".25"/><circle cx="12" cy="12" r="3.4"/></svg>`,
+  edit: `<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>`,
+  trash: `<svg viewBox="0 0 24 24"><path d="M6 7h12l-1 13.5A2 2 0 0 1 15 22H9a2 2 0 0 1-2-1.5L6 7z"/><rect x="9" y="10" width="1.6" height="8" rx=".8" fill-opacity=".5"/><rect x="13.4" y="10" width="1.6" height="8" rx=".8" fill-opacity=".5"/><path d="M9.5 4h5l.8 2H8.7z"/></svg>`,
+};
+const NAV_META = {
+  dashboard: { icon: ICONS.dashboard, label: "Dashboard" },
+  news: { icon: ICONS.news, label: "News" },
+  videos: { icon: ICONS.videos, label: "Videos" },
+  events: { icon: ICONS.events, label: "Events" },
+  notifications: { icon: ICONS.notifications, label: "Notifications" },
+  programme: { icon: ICONS.programme, label: "Live Schedule" },
+  homepage: { icon: ICONS.homepage, label: "Homepage Builder" },
+  categories: { icon: ICONS.categories, label: "Categories" },
+  districts: { icon: ICONS.districts, label: "Districts" },
+  ads: { icon: ICONS.ads, label: "Advertisements" },
+  employees: { icon: ICONS.employees, label: "Employees" },
+  activity: { icon: ICONS.activity, label: "Activity Log" },
+};
+const SPECIAL_TABS = ["dashboard","homepage","activity"];
+
+const TABS = {
+  news: {
+    title: "News Articles", desc: "Content shown on the website's News and Home sections.",
+    columns: [["image","Image"],["categoryLabel","Category"],["headline","Headline"],["status","Status"],["isBreaking","Breaking"]],
+    fields: [
+      {name:"headline", label:"Headline", type:"text", required:true},
+      {name:"summary", label:"Summary", type:"textarea", required:true},
+      {name:"body", label:"Body (one paragraph per line)", type:"textarea", isArray:true},
+      {name:"category", label:"Category", type:"select", options:["latest","sikkim","national","politics","business","sports","entertainment","tourism","culture"]},
+      {name:"categoryLabel", label:"Category Label", type:"text"},
+      {name:"district", label:"District", type:"select", optionsFrom:"districts"},
+      {name:"image", label:"Image filename (in /media)", type:"text", hint:"e.g. hero-gangtok.jpg"},
+      {name:"location", label:"Location", type:"text"},
+      {name:"author", label:"Author", type:"text", default:"Hamro Varta TV Desk"},
+      {name:"readTimeMinutes", label:"Read time (minutes)", type:"number", default:3},
+      {name:"featured", label:"Featured on Home hero", type:"checkbox"},
+      {name:"status", label:"Workflow status", type:"select",
+        options:["draft","submitted","under_review","approved","scheduled","published","rejected"], default:"draft"},
+      {name:"isBreaking", label:"Mark as BREAKING NEWS", type:"checkbox"},
+      {name:"priority", label:"Breaking priority", type:"select", options:["normal","high","critical"], default:"normal"},
+    ]
+  },
+  videos: {
+    title: "Videos", desc: "Content shown in the Videos section and on Home.",
+    columns: [["image","Image"],["categoryLabel","Category"],["title","Title"],["duration","Duration"]],
+    fields: [
+      {name:"title", label:"Title", type:"text", required:true},
+      {name:"description", label:"Description", type:"textarea"},
+      {name:"category", label:"Category", type:"select", options:["latest","popular","interviews","ground-reports","bulletins","shows"]},
+      {name:"categoryLabel", label:"Category Label", type:"text"},
+      {name:"image", label:"Thumbnail filename (in /media)", type:"text"},
+      {name:"duration", label:"Duration (mm:ss)", type:"text", default:"10:00"},
+      {name:"views", label:"Views label", type:"text", default:"1.0K"},
+    ]
+  },
+  events: {
+    title: "Events", desc: "Sikkim events Hamro Varta is covering — feeds the website's Events section.",
+    columns: [["image","Image"],["category","Type"],["name","Event"],["date","Date"],["district","District"],["status","Status"]],
+    fields: [
+      {name:"name", label:"Event name", type:"text", required:true},
+      {name:"description", label:"Description", type:"textarea"},
+      {name:"category", label:"Type", type:"select", options:["civic","cultural","religious","sports","tourism","political","emergency"]},
+      {name:"date", label:"Date (YYYY-MM-DD)", type:"text", required:true},
+      {name:"startTime", label:"Start time", type:"text", default:"09:00"},
+      {name:"endTime", label:"End time", type:"text", default:"17:00"},
+      {name:"venue", label:"Venue", type:"text"},
+      {name:"location", label:"Location", type:"text"},
+      {name:"district", label:"District", type:"select", optionsFrom:"districts"},
+      {name:"organizer", label:"Organizer", type:"text"},
+      {name:"image", label:"Image filename (in /media)", type:"text"},
+      {name:"registrationUrl", label:"Registration URL", type:"text"},
+      {name:"contact", label:"Contact", type:"text"},
+      {name:"status", label:"Status", type:"select", options:["upcoming","live","completed","cancelled"], default:"upcoming"},
+    ]
+  },
+  notifications: {
+    title: "Notifications", desc: "Demo push-style notifications shown in the app and site.",
+    columns: [["type","Type"],["title","Title"],["message","Message"],["timeAgo","Time"]],
+    fields: [
+      {name:"type", label:"Type", type:"select", options:["breaking","live","update","general"]},
+      {name:"title", label:"Title", type:"text", required:true},
+      {name:"message", label:"Message", type:"textarea", required:true},
+      {name:"timeAgo", label:"Time label", type:"text", default:"Just now"},
+      {name:"linkedArticleId", label:"Linked article ID (optional)", type:"text"},
+      {name:"linkedVideoId", label:"Linked video ID (optional)", type:"text"},
+    ]
+  },
+  programme: {
+    title: "Live Schedule", desc: "Today's TV rundown shown on the Live TV page.",
+    columns: [["time","Time"],["title","Programme"],["description","Description"],["isLiveNow","On Air"]],
+    fields: [
+      {name:"time", label:"Time (e.g. 7:00 AM)", type:"text", required:true},
+      {name:"title", label:"Programme title", type:"text", required:true},
+      {name:"description", label:"Description", type:"textarea"},
+      {name:"isLiveNow", label:"Currently on air", type:"checkbox"},
+    ]
+  },
+  categories: {
+    title: "Categories", desc: "Content taxonomy used across News and site navigation.",
+    columns: [["label","Label"],["id","Slug / ID"]],
+    fields: [
+      {name:"label", label:"Category label", type:"text", required:true},
+    ]
+  },
+  districts: {
+    title: "Districts", desc: "Sikkim's districts — used for district-based news filtering.",
+    columns: [["name","District"],["region","Region"],["isHeadquarters","HQ"]],
+    fields: [
+      {name:"name", label:"District name", type:"text", required:true},
+      {name:"region", label:"Region", type:"text"},
+      {name:"isHeadquarters", label:"State headquarters", type:"checkbox"},
+    ]
+  },
+  ads: {
+    title: "Advertisements", desc: "Advertiser campaigns and inventory (demo revenue module).",
+    columns: [["banner","Banner"],["advertiser","Advertiser"],["campaignName","Campaign"],["type","Placement"],["status","Status"],["impressions","Impr."],["clicks","Clicks"]],
+    fields: [
+      {name:"advertiser", label:"Advertiser / company", type:"text", required:true},
+      {name:"campaignName", label:"Campaign name", type:"text", required:true},
+      {name:"type", label:"Placement", type:"select", options:["homepage-banner","article-banner","sidebar-banner","mobile-banner","video-ad","sponsored-article","sponsored-video","native"]},
+      {name:"startDate", label:"Start date", type:"text"},
+      {name:"endDate", label:"End date", type:"text"},
+      {name:"banner", label:"Banner image filename (in /media)", type:"text"},
+      {name:"targetPages", label:"Target pages/categories", type:"text"},
+      {name:"status", label:"Status", type:"select", options:["active","scheduled","completed","paused"], default:"scheduled"},
+      {name:"impressions", label:"Impressions (demo)", type:"number", default:0},
+      {name:"clicks", label:"Clicks (demo)", type:"number", default:0},
+    ]
+  },
+  employees: {
+    title: "Employees", desc: "Staff directory, separate from CMS user accounts/roles.",
+    columns: [["employeeCode","ID"],["name","Name"],["department","Department"],["designation","Designation"],["employmentStatus","Status"]],
+    fields: [
+      {name:"employeeCode", label:"Employee ID", type:"text", required:true},
+      {name:"name", label:"Full name", type:"text", required:true},
+      {name:"department", label:"Department", type:"select", options:["Editorial","News","Video","Photography","Social Media","Technical","Administration","Advertising","Finance","HR"]},
+      {name:"designation", label:"Designation", type:"text"},
+      {name:"phone", label:"Phone", type:"text"},
+      {name:"email", label:"Email", type:"text"},
+      {name:"joiningDate", label:"Joining date", type:"text"},
+      {name:"employmentStatus", label:"Employment status", type:"select", options:["active","on-leave","inactive"], default:"active"},
+      {name:"reportingManager", label:"Reporting manager", type:"text"},
+      {name:"location", label:"Location", type:"select", optionsFrom:"districts"},
+    ]
+  },
+};
+
+let activeTab = "dashboard";
+let cache = {};
+
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"), 2200);
+}
+
+// -------------------------------------------------------------- role UI --
+function initRolePicker(){
+  const sel = document.getElementById("roleSelect");
+  sel.innerHTML = Object.keys(ROLES).map(k=>`<option value="${k}">${ROLES[k].label}</option>`).join("");
+  sel.value = currentRole();
+  sel.addEventListener("change", ()=>{
+    localStorage.setItem("hvt_demo_role", sel.value);
+    if(!roleAllows(activeTab)) activeTab = "dashboard";
+    renderNav();
+    renderActive();
+    toast(`Now viewing as ${ROLES[sel.value].label}`);
+  });
+}
+
+function renderNav(){
+  const wrap = document.getElementById("navScroll");
+  let html = "";
+  NAV_GROUPS.forEach(group=>{
+    const visible = group.items.filter(roleAllows);
+    if(visible.length === 0) return;
+    html += `<div class="nav-group-label">${group.label}</div>`;
+    visible.forEach(key=>{
+      const meta = NAV_META[key];
+      const countHtml = SPECIAL_TABS.includes(key) ? "" : `<span class="count" id="count-${key}">0</span>`;
+      html += `<div class="navitem ${key===activeTab?'active':''}" data-tab="${key}"><span class="nav-icon">${meta.icon}</span>${meta.label} ${countHtml}</div>`;
+    });
+  });
+  wrap.innerHTML = html;
+  wrap.querySelectorAll(".navitem").forEach(el=>{
+    el.addEventListener("click", ()=>{
+      activeTab = el.dataset.tab;
+      renderNav();
+      renderActive();
+    });
+  });
+}
+
+// -------------------------------------------------------------- loading --
+async function loadAll(){
+  for(const key of Object.keys(TABS)){
+    const res = await api(`/${key}`);
+    cache[key] = await res.json();
+  }
+  const dashRes = await api("/dashboard");
+  cache.dashboard = await dashRes.json();
+  const hpRes = await api("/homepage");
+  cache.homepage = (await hpRes.json()).sort((a,b)=>a.order-b.order);
+  const logRes = await api("/audit");
+  cache.activity = await logRes.json();
+  updateCounts();
+}
+
+function updateCounts(){
+  Object.keys(TABS).forEach(key=>{
+    const el = document.getElementById(`count-${key}`);
+    if(el) el.textContent = (cache[key]||[]).length;
+  });
+}
+
+function renderActive(){
+  document.getElementById("addBtn").style.display = (SPECIAL_TABS.includes(activeTab) || isReadOnly()) ? "none" : "inline-flex";
+  if(activeTab === "dashboard") return renderDashboard();
+  if(activeTab === "homepage") return renderHomepageBuilder();
+  if(activeTab === "activity") return renderActivityLog();
+  return renderGenericTable();
+}
+
+// ------------------------------------------------------------ dashboard --
+function renderDashboard(){
+  document.getElementById("pageTitle").textContent = "Dashboard";
+  document.getElementById("pageDesc").textContent = `Newsroom overview — viewing as ${ROLES[currentRole()].label}.`;
+  const d = cache.dashboard || {};
+  const c = d.content || {};
+  const a = d.audienceDemo || {};
+  const r = d.revenueDemo || {};
+  const breaking = (cache.news||[]).filter(n=>n.isBreaking);
+
+  const wrap = document.getElementById("tableWrap");
+  const kpi = (accent, icon, n, l) => `
+    <div class="kpi-card accent-${accent}">
+      <div class="icon-chip">${ICONS[icon]}</div>
+      <div><div class="n">${n}</div><div class="l">${l}</div></div>
+    </div>`;
+  wrap.innerHTML = `
+    <div class="breaking-ticker">
+      <span class="dot">BREAKING</span>
+      ${breaking.length
+        ? breaking.map(n=>`<span>${n.headline}</span>`).join("&nbsp;&nbsp;·&nbsp;&nbsp;")
+        : `<span class="empty-ticker">No article is currently marked as breaking news.</span>`}
+    </div>
+
+    <div class="section-title">Content</div>
+    <div class="kpi-grid">
+      ${kpi("ink","news", c.totalArticles ?? 0, "Total Articles")}
+      ${kpi("green","news", c.published ?? 0, "Published")}
+      ${kpi("gold","activity", c.pendingReview ?? 0, "Pending Review")}
+      ${kpi("red","notifications", c.breakingActive ?? 0, "Active Breaking News")}
+      ${kpi("ink","news", c.draft ?? 0, "Drafts")}
+      ${kpi("ink","events", c.scheduled ?? 0, "Scheduled")}
+      ${kpi("ink","videos", c.totalVideos ?? 0, "Published Videos")}
+      ${kpi("ink","events", c.upcomingEvents ?? 0, "Upcoming Events")}
+    </div>
+
+    <div class="section-title">Audience <span class="demo-note">Demo data — connect analytics to replace</span></div>
+    <div class="kpi-grid">
+      ${kpi("ink","dashboard", a.websiteVisitors?.toLocaleString() ?? "—", "Website Visitors")}
+      ${kpi("ink","dashboard", a.appUsers?.toLocaleString() ?? "—", "App Users")}
+      ${kpi("ink","employees", a.newUsers?.toLocaleString() ?? "—", "New Users")}
+      ${kpi("ink","employees", a.returningUsers?.toLocaleString() ?? "—", "Returning Users")}
+    </div>
+
+    <div class="section-title">Revenue <span class="demo-note">Demo data — connect ad server to replace</span></div>
+    <div class="kpi-grid">
+      ${kpi("gold","ads", "₹" + (r.adRevenueINR?.toLocaleString() ?? "—"), "Ad Revenue (this month)")}
+      ${kpi("ink","ads", r.activeCampaigns ?? "—", "Active Campaigns")}
+      ${kpi("ink","dashboard", r.impressions?.toLocaleString() ?? "—", "Impressions")}
+      ${kpi("ink","dashboard", r.clicks?.toLocaleString() ?? "—", "Clicks")}
+    </div>
+  `;
+}
+
+// ------------------------------------------------------- homepage builder --
+async function renderHomepageBuilder(){
+  document.getElementById("pageTitle").textContent = "Homepage Builder";
+  document.getElementById("pageDesc").textContent = "Drag-and-drop is simplified to up/down + on/off for this demo.";
+  const readOnly = isReadOnly();
+  const wrap = document.getElementById("tableWrap");
+  const sections = cache.homepage || [];
+  wrap.innerHTML = sections.map((s, i)=>`
+    <div class="section-row ${s.enabled?'':'disabled'}" data-id="${s.id}">
+      <div class="order-no">${i+1}</div>
+      <div class="label">${s.label}</div>
+      <label class="switch">
+        <input type="checkbox" ${s.enabled?"checked":""} ${readOnly?"disabled":""} data-action="toggle">
+        <span class="slider"></span>
+      </label>
+      <div class="stack-btns">
+        <button class="icon-btn" data-action="up" ${readOnly?"disabled":""}>▲</button>
+        <button class="icon-btn" data-action="down" ${readOnly?"disabled":""}>▼</button>
+      </div>
+    </div>
+  `).join("") + (readOnly ? `<div class="readonly-banner">Read-only role — homepage layout can't be edited from here.</div>` : "");
+
+  if(readOnly) return;
+  wrap.querySelectorAll(".section-row").forEach(row=>{
+    const id = row.dataset.id;
+    row.querySelector('[data-action="toggle"]').addEventListener("change", (e)=>{
+      const item = sections.find(s=>s.id===id);
+      item.enabled = e.target.checked;
+      saveHomepageOrder();
+    });
+    row.querySelector('[data-action="up"]').addEventListener("click", ()=>moveSection(id, -1));
+    row.querySelector('[data-action="down"]').addEventListener("click", ()=>moveSection(id, 1));
+  });
+}
+
+function moveSection(id, dir){
+  const sections = cache.homepage;
+  const idx = sections.findIndex(s=>s.id===id);
+  const swapWith = idx + dir;
+  if(swapWith < 0 || swapWith >= sections.length) return;
+  [sections[idx], sections[swapWith]] = [sections[swapWith], sections[idx]];
+  sections.forEach((s,i)=>s.order = i+1);
+  saveHomepageOrder();
+}
+
+async function saveHomepageOrder(){
+  await api("/homepage/reorder", {
+    method:"PUT", headers:{"Content-Type":"application/json"}, body: JSON.stringify(cache.homepage)
+  });
+  renderHomepageBuilder();
+  toast("Homepage layout saved");
+}
+
+// ------------------------------------------------------------ activity log --
+function renderActivityLog(){
+  document.getElementById("pageTitle").textContent = "Activity Log";
+  document.getElementById("pageDesc").textContent = "Every create/update/delete across the CMS, with who performed it.";
+  const wrap = document.getElementById("tableWrap");
+  const list = cache.activity || [];
+  if(list.length === 0){
+    wrap.innerHTML = `<div class="empty">No activity recorded yet — try creating or editing something.</div>`;
+    return;
+  }
+  wrap.innerHTML = `<div style="background:var(--surface);border:1px solid var(--hairline);border-radius:8px;padding:6px 16px;">` +
+    list.slice(0, 100).map(l=>`
+      <div class="log-row">
+        <div class="t">${new Date(l.timestamp).toLocaleString()}</div>
+        <div class="who">${l.user}</div>
+        <div><span class="log-action ${l.action}">${l.action}</span></div>
+        <div>${l.entity} <span style="color:var(--slate)">#${l.entityId}</span></div>
+      </div>
+    `).join("") + `</div>`;
+}
+
+// -------------------------------------------------------------- generic CRUD --
+function renderGenericTable(){
+  const cfg = TABS[activeTab];
+  document.getElementById("pageTitle").textContent = cfg.title;
+  document.getElementById("pageDesc").textContent = cfg.desc;
+  const readOnly = isReadOnly();
+  document.getElementById("addBtn").style.display = readOnly ? "none" : "inline-flex";
+  const list = cache[activeTab] || [];
+  const wrap = document.getElementById("tableWrap");
+  if(list.length === 0){
+    wrap.innerHTML = `<div class="empty">Nothing here yet${readOnly ? "." : ' — click "Add New" to create the first entry.'}</div>`;
+    return;
+  }
+  let html = `<table><thead><tr>`;
+  cfg.columns.forEach(([key,label])=>{ html += `<th>${label}</th>`; });
+  html += `<th></th></tr></thead><tbody>`;
+  list.forEach(item=>{
+    html += "<tr>";
+    cfg.columns.forEach(([key])=>{
+      let val = item[key];
+      if(key === "image" || key === "banner"){
+        html += `<td class="thumb">${val ? `<img src="/media/${val}" onerror="this.style.opacity=0.15">` : ""}</td>`;
+      } else if(key === "categoryLabel" || key === "type" || key === "category"){
+        html += `<td><span class="tag">${val || ""}</span></td>`;
+      } else if(key === "status"){
+        html += `<td><span class="status-pill status-${val}">${(val||"").replace("_"," ")}</span></td>`;
+      } else if(key === "headline" || key === "title" || key === "message" || key === "name"){
+        html += `<td class="headline-cell">${val || ""}</td>`;
+      } else if(key === "isLiveNow"){
+        html += `<td>${val ? `<span class="dot-pill on"><span class="dot"></span>ON AIR</span>` : "—"}</td>`;
+      } else if(key === "isBreaking"){
+        html += `<td>${val ? `<span class="dot-pill on"><span class="dot"></span>Breaking</span>` : "—"}</td>`;
+      } else if(key === "isHeadquarters"){
+        html += `<td>${val ? `<span class="hq-pill">HQ</span>` : "—"}</td>`;
+      } else if(key === "impressions" || key === "clicks"){
+        html += `<td>${typeof val === "number" ? val.toLocaleString() : (val || "—")}</td>`;
+      } else {
+        html += `<td>${val || "—"}</td>`;
+      }
+    });
+    html += `<td class="actions">
+      <button class="btn ghost small icon-only" title="View" onclick="openView('${item.id}')">${ICONS.view}</button>
+      ${readOnly ? "" : `
+      <button class="btn ghost small icon-only" title="Edit" onclick="openForm('${item.id}')">${ICONS.edit}</button>
+      <button class="btn ghost small icon-only danger" title="Delete" onclick="removeItem('${item.id}')">${ICONS.trash}</button>`}
+    </td>`;
+    html += "</tr>";
+  });
+  html += "</tbody></table>";
+  wrap.innerHTML = html;
+}
+
+function buildFieldHTML(f, value){
+  const val = value===undefined ? (f.default!==undefined?f.default:"") : value;
+  if(f.type === "textarea"){
+    const text = f.isArray && Array.isArray(val) ? val.join("\n") : (val||"");
+    return `<textarea name="${f.name}" ${f.required?"required":""}>${text}</textarea>`;
+  }
+  if(f.type === "select"){
+    const options = f.optionsFrom ? (cache[f.optionsFrom]||[]).map(x=>x.name || x.label || x.id) : f.options;
+    return `<select name="${f.name}">${options.map(o=>`<option value="${o}" ${o===val?"selected":""}>${o}</option>`).join("")}</select>`;
+  }
+  if(f.type === "checkbox"){
+    return `<input type="checkbox" name="${f.name}" ${val?"checked":""} style="width:auto;">`;
+  }
+  return `<input type="${f.type}" name="${f.name}" value="${val!==undefined?val:""}" ${f.required?"required":""}>`;
+}
+
+window.openForm = function(id){
+  const cfg = TABS[activeTab];
+  const item = id ? (cache[activeTab].find(x=>x.id===id) || {}) : {};
+  document.getElementById("modalTitle").textContent = id ? `Edit ${cfg.title.replace(/s$/,'')}` : `Add ${cfg.title.replace(/s$/,'')}`;
+  const form = document.getElementById("entityForm");
+  form.innerHTML = cfg.fields.map(f=>`
+    <div class="field">
+      <label>${f.label}</label>
+      ${buildFieldHTML(f, item[f.name])}
+      ${f.hint?`<div class="hint">${f.hint}</div>`:""}
+    </div>`).join("") + `
+    <div class="modal-actions">
+      <button type="button" class="btn ghost" id="cancelBtn">Cancel</button>
+      <button type="submit" class="btn">${id?"Save Changes":"Create"}</button>
+    </div>`;
+  form.dataset.editId = id || "";
+  document.getElementById("modalBackdrop").classList.add("open");
+  document.getElementById("cancelBtn").onclick = closeForm;
+}
+
+window.openView = function(id){
+  const cfg = TABS[activeTab];
+  const item = (cache[activeTab]||[]).find(x=>x.id===id);
+  if(!item) return;
+  document.getElementById("modalTitle").textContent = `View ${cfg.title.replace(/s$/,'')}`;
+  const form = document.getElementById("entityForm");
+  const rows = cfg.fields.map(f=>{
+    let val = item[f.name];
+    let display;
+    if(Array.isArray(val)) display = val.length ? val.join(" / ") : "—";
+    else if(typeof val === "boolean") display = val ? "Yes" : "No";
+    else if((f.name === "image" || f.name === "banner") && val) display = `${val}<img src="/media/${val}" onerror="this.style.display='none'">`;
+    else display = (val !== undefined && val !== "" && val !== null) ? val : "—";
+    return `<div class="view-row"><div class="view-label">${f.label}</div><div class="view-value">${display}</div></div>`;
+  }).join("");
+  form.innerHTML = `<div class="view-list">${rows}</div>
+    <div class="modal-actions">
+      <button type="button" class="btn ghost" id="cancelBtn">Close</button>
+      ${isReadOnly() ? "" : `<button type="button" class="btn" id="viewEditBtn">Edit</button>`}
+    </div>`;
+  form.dataset.editId = "";
+  document.getElementById("modalBackdrop").classList.add("open");
+  document.getElementById("cancelBtn").onclick = closeForm;
+  const editBtn = document.getElementById("viewEditBtn");
+  if(editBtn) editBtn.onclick = ()=>{ closeForm(); openForm(id); };
+}
+
+function closeForm(){ document.getElementById("modalBackdrop").classList.remove("open"); }
+
+document.getElementById("addBtn").addEventListener("click", ()=>{ if(!SPECIAL_TABS.includes(activeTab)) openForm(null); });
+document.getElementById("modalBackdrop").addEventListener("click", (e)=>{ if(e.target.id==="modalBackdrop") closeForm(); });
+
+document.getElementById("entityForm").addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  const cfg = TABS[activeTab];
+  const form = e.target;
+  const data = new FormData(form);
+  const payload = {};
+  cfg.fields.forEach(f=>{
+    if(f.type === "checkbox"){
+      payload[f.name] = form.querySelector(`[name="${f.name}"]`).checked;
+    } else if(f.isArray){
+      payload[f.name] = (data.get(f.name)||"").split("\n").map(s=>s.trim()).filter(Boolean);
+    } else if(f.type === "number"){
+      payload[f.name] = Number(data.get(f.name));
+    } else {
+      payload[f.name] = data.get(f.name);
+    }
+  });
+  const editId = form.dataset.editId;
+  if(!payload.categoryLabel && payload.category){
+    payload.categoryLabel = payload.category.charAt(0).toUpperCase()+payload.category.slice(1);
+  }
+  if((activeTab === "news" || activeTab === "videos") && !payload.publishedAt){
+    payload.publishedAt = new Date().toISOString();
+  }
+  const url = editId ? `/${activeTab}/${editId}` : `/${activeTab}`;
+  const method = editId ? "PUT" : "POST";
+  await api(url, {method, headers:{"Content-Type":"application/json"}, body: JSON.stringify(payload)});
+  closeForm();
+  toast(editId ? "Changes saved" : "Entry created");
+  await loadAll();
+  renderNav();
+  renderActive();
+});
+
+window.removeItem = async function(id){
+  if(!confirm("Delete this entry? This cannot be undone.")) return;
+  await api(`/${activeTab}/${id}`, {method:"DELETE"});
+  toast("Entry deleted");
+  await loadAll();
+  renderNav();
+  renderActive();
+}
+
+(async function init(){
+  initRolePicker();
+  if(!roleAllows(activeTab)) activeTab = "dashboard";
+  await loadAll();
+  renderNav();
+  renderActive();
+})();
+</script>
+</body>
+</html>
