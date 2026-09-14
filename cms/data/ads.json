@@ -1,0 +1,41 @@
+[
+  {
+    "id": "ad-001",
+    "advertiser": "Yeti Adventure Tours (Demo)",
+    "campaignName": "Autumn Trekking Season",
+    "type": "homepage-banner",
+    "startDate": "2026-09-01",
+    "endDate": "2026-10-31",
+    "banner": "hero-kanchenjunga.jpg",
+    "targetPages": "homepage, tourism",
+    "status": "active",
+    "impressions": 84200,
+    "clicks": 1310
+  },
+  {
+    "id": "ad-002",
+    "advertiser": "Himalayan Organic Mart (Demo)",
+    "campaignName": "Festive Season Sale",
+    "type": "article-banner",
+    "startDate": "2026-09-10",
+    "endDate": "2026-09-30",
+    "banner": "organic-farming.jpg",
+    "targetPages": "sikkim, business",
+    "status": "active",
+    "impressions": 41750,
+    "clicks": 902
+  },
+  {
+    "id": "ad-003",
+    "advertiser": "Gangtok Realty Group (Demo)",
+    "campaignName": "New Listings — MG Marg",
+    "type": "sidebar-banner",
+    "startDate": "2026-08-01",
+    "endDate": "2026-08-31",
+    "banner": "mg-marg.jpg",
+    "targetPages": "homepage",
+    "status": "completed",
+    "impressions": 63980,
+    "clicks": 754
+  }
+]

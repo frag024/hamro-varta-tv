@@ -1,0 +1,8 @@
+[
+  { "id": "d-001", "name": "Gangtok", "region": "East Sikkim", "isHeadquarters": true },
+  { "id": "d-002", "name": "Mangan", "region": "North Sikkim", "isHeadquarters": false },
+  { "id": "d-003", "name": "Namchi", "region": "South Sikkim", "isHeadquarters": false },
+  { "id": "d-004", "name": "Gyalshing", "region": "West Sikkim", "isHeadquarters": false },
+  { "id": "d-005", "name": "Pakyong", "region": "East Sikkim", "isHeadquarters": false },
+  { "id": "d-006", "name": "Soreng", "region": "West Sikkim", "isHeadquarters": false }
+]
